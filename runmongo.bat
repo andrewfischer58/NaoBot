@@ -1,0 +1,1 @@
+mongod --dbpath C:\Python27\Projects\data

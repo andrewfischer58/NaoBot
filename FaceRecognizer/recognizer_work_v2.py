@@ -9,7 +9,7 @@ import publish_name
 import types
 import time
 from scipy import ndimage
-
+from pymongo import MongoClient
 
 # For face detection we will use the Haar Cascade provided by OpenCV.
 cascadePath = "haarcascade_frontalface_default.xml"
@@ -17,6 +17,12 @@ faceCascade = cv2.CascadeClassifier(cascadePath)
 
 # For face recognition we will the the LBPH Face Recognizer 
 recognizer = cv2.createLBPHFaceRecognizer()
+
+client = MongoClient('localhost', 27017)
+
+db = client.pollsapp
+
+collection =  db.faceImages
 
 def on_publish(cli, userdata, mid):
   # Disconnect after our message has been sent.
@@ -98,7 +104,12 @@ def on_message(client, userdata, rc):
 				
 				
 				Subject = nbr_predicted
-				name  = ''
+				
+				post = collections.find_one({"SubjectID": Subject})
+					
+				print post	
+				
+				'''
 				if(Subject == 16):
 					name = 'Lincoln'
 				elif(Subject == 17):
@@ -113,7 +124,7 @@ def on_message(client, userdata, rc):
 					name = 'Jeff'
 				else:
 					name = 'stranger'
-					
+				'''	
 				print ('Hello ' + name)
 				
 				cli = mqtt.Mosquitto("FaceResults")
