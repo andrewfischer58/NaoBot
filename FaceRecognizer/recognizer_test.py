@@ -113,6 +113,22 @@ else:
 			
 			Subject = nbr_predicted
 			
+			
+			if(Subject == 16):
+				name = 'Lincoln'
+			elif(Subject == 17):
+				name = 'Chris'
+			elif(Subject == 18):
+				name = 'Yiran'
+			elif(Subject == 19):
+				name = 'Ning'
+			elif(Subject == 20):
+				name = 'Andrew'
+			elif(Subject == 21):
+				name = 'Jeff'
+			else:
+				name = 'stranger'
+			'''
 			post = collection.find_one({"SubjectID": Subject})
 					
 			print "Are you " + post['firstname'] + ' ' + post['lastname']
@@ -135,3 +151,5 @@ else:
 					for i in post:
 						print 'Hello ' + i['firstname'] + ' ' + i['lastname']
 		break
+		'''
+			print ('Hello ' + name)
