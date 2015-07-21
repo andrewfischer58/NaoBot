@@ -18,11 +18,13 @@ faceCascade = cv2.CascadeClassifier(cascadePath)
 # For face recognition we will the the LBPH Face Recognizer 
 recognizer = cv2.createLBPHFaceRecognizer()
 
+#Mongo DB
 client = MongoClient('localhost', 27017)
 
 db = client.pollsapp
 
 collection =  db.faceImages
+
 
 def on_publish(cli, userdata, mid):
   # Disconnect after our message has been sent.
@@ -105,11 +107,11 @@ def on_message(client, userdata, rc):
 				
 				Subject = nbr_predicted
 				
-				post = collections.find_one({"SubjectID": Subject})
+				post = collection.find_one({"SubjectID": Subject})
 					
 				print post	
 				
-				'''
+				
 				if(Subject == 16):
 					name = 'Lincoln'
 				elif(Subject == 17):
@@ -124,14 +126,16 @@ def on_message(client, userdata, rc):
 					name = 'Jeff'
 				else:
 					name = 'stranger'
-				'''	
+					
 				print ('Hello ' + name)
+				
+				
 				
 				cli = mqtt.Mosquitto("FaceResults")
 				cli.connect("54.173.42.47")
 				cli.on_publish = on_publish
 				time.sleep(3)
-				cli.publish('response',name,2)
+				cli.publish('response', name,2)
 			else:
 				print 'No faces were found!' 
 				cli.publish('response','Null',2)

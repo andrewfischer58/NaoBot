@@ -85,7 +85,7 @@ recognizer.train(images, np.array(labels))
 
 # Append the images with the extension .sad into image_paths
 
-predict_image_pil = Image.open('16.jpg').convert('L')
+predict_image_pil = Image.open('163.jpg').convert('L')
 
 predict_image = np.array(predict_image_pil, 'uint8')
 
@@ -102,18 +102,18 @@ else:
 		if(nbr_predicted != -1):		
 			print "{} is Correctly Recognized with confidence {}".format(nbr_predicted, conf)
 			
-			cv2.imshow("Recognizing Face", predict_gauss[y: y + h, x: x + w])
+			#cv2.imshow("Recognizing Face", predict_gauss[y: y + h, x: x + w])
 			count = 0
 			
 			while(os.path.isfile(path + '/subject' + str(nbr_predicted) + '.' + str(count) + '.jpg') == True):
 				count += 1
 				
 			#cv2.imwrite(path + '/subject' + str(nbr_predicted) + '.' + str(count) + '.jpg',predict_image[y: y + h, x: x + w])
-			cv2.waitKey(5000)
+			#cv2.waitKey(5000)
 			
 			Subject = nbr_predicted
 			
-			
+			'''
 			if(Subject == 16):
 				name = 'Lincoln'
 			elif(Subject == 17):
@@ -128,6 +128,8 @@ else:
 				name = 'Jeff'
 			else:
 				name = 'stranger'
+			print "Hello " + name	
+				
 			'''
 			post = collection.find_one({"SubjectID": Subject})
 					
@@ -140,7 +142,9 @@ else:
 				print 'Hello ' + post['firstname']
 			else:
 				print 'Who are you?' 
+				#place speech to text function here 
 				response = raw_input('Enter your first name: ') 
+				#and here
 				response1 = raw_input('Enter your last name: ')
 				
 				post = collection.find({"firstname": response, 'lastname': response1})
@@ -151,5 +155,3 @@ else:
 					for i in post:
 						print 'Hello ' + i['firstname'] + ' ' + i['lastname']
 		break
-		'''
-			print ('Hello ' + name)
