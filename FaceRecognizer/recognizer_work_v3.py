@@ -59,9 +59,7 @@ def on_message(client, userdata, rc):
 	print("Message received! ")
 	with open("img.jpg","wb") as fd:
 		fd.write(rc.payload)
-	
-
-	
+		
 	# Open the image properly for the face detection
 	predict_image_pil = Image.open('img.jpg').convert('L')
 	predict_image = np.array(predict_image_pil, 'uint8')
@@ -80,7 +78,7 @@ def on_message(client, userdata, rc):
 		cli.connect("54.173.42.47")
 		cli.on_publish = on_publish
 		time.sleep(3)
-		cli.publish('response','Stranger',2)
+		cli.publish('response','Nothing',2)
 	
 	else:
 	#found face
@@ -98,7 +96,7 @@ def on_message(client, userdata, rc):
 				print 'Face found!' 
 				print "{} is Correctly Recognized with confidence {}".format(nbr_predicted, conf)
 				count = 0
-				
+						
 				while(os.path.isfile(path + '/subject' + str(nbr_predicted) + '.' + str(count) + '.jpg') == True):
 					count += 1
 		
@@ -109,18 +107,23 @@ def on_message(client, userdata, rc):
 				
 				post = collection.find_one({"SubjectID": Subject})
 					
-				print "Are you " + post['firstname'] + ' ' + post['lastname']
+				question =  "Are you " + post['firstname'] + ' ' + post['lastname'] + '?'
+				
+				
 			
 				response = raw_input('Enter your answer: ')
-				print response
 			
-				if (response == 'yes'):
+				if (response == ('yes' or 'yep')):
 					print 'Hello ' + post['firstname']
+					cli = mqtt.Mosquitto("FaceResults")
+					cli.connect("54.173.42.47")
+					cli.on_publish = on_publish
+					cli.publish('response', 'Hello' + post['firstname'], 2)
 				else:
 					print 'Who are you?' 
-					#place speech to text function here 
+					#option to either enter or say 
 					response = raw_input('Enter your first name: ') 
-					#and here
+					#Must use tablet to enter
 					response1 = raw_input('Enter your last name: ')
 					
 					post = collection.find({"firstname": response, 'lastname': response1})
@@ -130,16 +133,14 @@ def on_message(client, userdata, rc):
 					else:
 						for i in post:
 							print 'Hello ' + i['firstname'] + ' ' + i['lastname']
-			break
+							
+							cli = mqtt.Mosquitto("FaceResults")
+							cli.connect("54.173.42.47")
+							cli.on_publish = on_publish
+							cli.publish('response', 'Hello' + post['firstname'], 2)
+					
+				break
 				
-				
-				
-			cli = mqtt.Mosquitto("FaceResults")
-			cli.connect("54.173.42.47")
-			cli.on_publish = on_publish
-			time.sleep(3)
-			cli.publish('response', name,2)
-			
 			else:
 				print 'No faces were found!' 
 				cli.publish('response','Null',2)

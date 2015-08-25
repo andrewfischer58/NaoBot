@@ -33,6 +33,7 @@ def dif_gaussian(img, sigma0 = 1.0, sigma1 = 2.0,alpha = 0.1, tau = 10.0):
 	result = result / np.power(np.mean(np.power(np.abs(result),alpha)), 1.0/alpha)
 	result = result / np.power(np.mean(np.power(np.minimum(np.abs(result),tau),alpha)), 1.0/alpha)
 	result = tau*np.tanh(result/tau)
+	#result = cv2.equalizeHist(result)
 
 	return result
 	#return np.uint8(result)
@@ -62,7 +63,7 @@ def get_images_and_labels(path):
         # If face is detected, append the face to images and the label to labels
         for (x, y, w, h) in faces:
             predict_gauss = dif_gaussian(image,1.0,2.0)
-            images.append(predict_gauss[y: y + h, x: x + w])
+            images.append(predict_hist[y: y + h, x: x + w])
 			
             #images.append(image[y: y + h, x: x + w])
             labels.append(nbr)
@@ -85,7 +86,7 @@ recognizer.train(images, np.array(labels))
 
 # Append the images with the extension .sad into image_paths
 
-predict_image_pil = Image.open('163.jpg').convert('L')
+predict_image_pil = Image.open('test1.jpg').convert('L')
 
 predict_image = np.array(predict_image_pil, 'uint8')
 
@@ -102,14 +103,14 @@ else:
 		if(nbr_predicted != -1):		
 			print "{} is Correctly Recognized with confidence {}".format(nbr_predicted, conf)
 			
-			#cv2.imshow("Recognizing Face", predict_gauss[y: y + h, x: x + w])
+			cv2.imshow("Recognizing Face", predict_gauss[y: y + h, x: x + w])
 			count = 0
 			
 			while(os.path.isfile(path + '/subject' + str(nbr_predicted) + '.' + str(count) + '.jpg') == True):
 				count += 1
 				
 			#cv2.imwrite(path + '/subject' + str(nbr_predicted) + '.' + str(count) + '.jpg',predict_image[y: y + h, x: x + w])
-			#cv2.waitKey(5000)
+			cv2.waitKey(5000)
 			
 			Subject = nbr_predicted
 			
