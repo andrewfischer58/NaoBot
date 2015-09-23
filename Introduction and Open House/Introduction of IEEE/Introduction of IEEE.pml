@@ -5,7 +5,9 @@
         <BehaviorDescription name="behavior" src="behavior_1" xar="behavior.xar" />
     </BehaviorDescriptions>
     <Dialogs />
-    <Resources />
+    <Resources>
+        <File name="swiftswords_ext" src="behavior_1/swiftswords_ext.mp3" />
+    </Resources>
     <Topics />
     <IgnoredPaths />
 </Package>

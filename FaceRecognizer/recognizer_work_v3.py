@@ -15,7 +15,7 @@ from pymongo import MongoClient
 cascadePath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascadePath)
 
-# For face recognition we will the the LBPH Face Recognizer 
+# For face recognition we will use the LBPH Face Recognizer 
 recognizer = cv2.createLBPHFaceRecognizer()
 
 #Mongo DB
@@ -109,8 +109,9 @@ def on_message(client, userdata, rc):
 					
 				question =  "Are you " + post['firstname'] + ' ' + post['lastname'] + '?'
 				
-				
-			
+				'''
+				response of Facial recognition
+				'''
 				response = raw_input('Enter your answer: ')
 			
 				if (response == ('yes' or 'yep')):
@@ -125,7 +126,7 @@ def on_message(client, userdata, rc):
 					response = raw_input('Enter your first name: ') 
 					#Must use tablet to enter
 					response1 = raw_input('Enter your last name: ')
-					
+					#post the first and last name 
 					post = collection.find({"firstname": response, 'lastname': response1})
 
 					if (post.count()==0):
@@ -133,12 +134,10 @@ def on_message(client, userdata, rc):
 					else:
 						for i in post:
 							print 'Hello ' + i['firstname'] + ' ' + i['lastname']
-							
 							cli = mqtt.Mosquitto("FaceResults")
 							cli.connect("54.173.42.47")
 							cli.on_publish = on_publish
 							cli.publish('response', 'Hello' + post['firstname'], 2)
-					
 				break
 				
 			else:
