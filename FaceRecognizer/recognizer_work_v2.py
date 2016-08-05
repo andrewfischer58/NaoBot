@@ -4,7 +4,7 @@
 import cv2, os
 import paho.mqtt.client as mqtt
 import numpy as np
-from PIL import Image
+import Image
 import publish_name
 import types
 import time

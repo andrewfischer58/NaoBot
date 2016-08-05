@@ -6,8 +6,8 @@ db = client.pollsapp
 
 #loop to place info or input from subject
 
-faceImage = {"SubjectID": 22,
-      	 	 "firstname": 'Li',
-			 "lastname": 'Bai'}
+faceImage = {"SubjectID": 23,
+      	 	 "firstname": 'Jin',
+			 "lastname": ''}
 posts = db.faceImages
 post_id = posts.insert_one(faceImage).inserted_id

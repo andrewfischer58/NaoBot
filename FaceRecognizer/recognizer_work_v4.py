@@ -108,44 +108,46 @@ def on_message(client, userdata, rc):
 				
 				Subject = nbr_predicted
 				
-				post = collection.find_one({"SubjectID": Subject})
+				post = collection.find_one({"id": Subject})
 					
-				print "Are you " + post['firstname'] + ' ' + post['lastname']
-			
-				response = raw_input('Enter your answer: ')
-				print response
-			
-				if (response == 'yes'):
-					print 'Hello ' + post['firstname']
-                                        name = post['firstname'] + ' ' + post['lastname']
-				else:
-					print 'Who are you?' 
-					#place speech to text function here 
-					response = raw_input('Enter your first name: ') 
-					#and here
-					response1 = raw_input('Enter your last name: ')
-					name=response +  ' ' + response1
-					post = collection.find({"firstname": response, 'lastname': response1})
+				#print "Are you " + post['firstname'] + ' ' + post['lastname']
+                                name = "You are recognized as " +post['name']+", with "+str(int(conf100))+" percent confidence. Hello, "+post['name']
+                                print name
+##				response = raw_input('Enter your answer: ')
+##				print response
+##			
+##				if (response == 'yes'):
+##					print 'Hello ' + post['firstname']
+##                                        name = post['firstname'] + ' ' + post['lastname']
+##				else:
+##					print 'Who are you?' 
+##					#place speech to text function here 
+##					response = raw_input('Enter your first name: ') 
+##					#and here
+##					response1 = raw_input('Enter your last name: ')
+##					name=response +  ' ' + response1
+##					post = collection.find({"firstname": response, 'lastname': response1})
+##
+##					if (post.count()==0):
+##						print 'What is your full name?'
+##					else:
+##						for i in post:
+##							print 'Hello ' + i['firstname'] + ' ' + i['lastname']
+				cli = mqtt.Mosquitto("FaceResults")
+				cli.connect("54.173.42.47")
+				cli.on_publish = on_publish
+				time.sleep(3)
+				cli.publish('response', name,2)
+				break
 
-					if (post.count()==0):
-						print 'What is your full name?'
-					else:
-						for i in post:
-							print 'Hello ' + i['firstname'] + ' ' + i['lastname']
-                                cli = mqtt.Mosquitto("FaceResults")
-                                cli.connect("54.173.42.47")
-                                cli.on_publish = on_publish
-                                time.sleep(5)
-                                cli.publish('response', name,2)
-			
-				
-				
-				
 
-			
+
+
+
+
                         else:
-                            print 'No faces were found!' 
-                            cli.publish('response','Null',2)
+                                print 'No faces were found!' 
+                                cli.publish('response','Null',2)
 
 		
 		#used to test and publish the image of the source/taken picture 

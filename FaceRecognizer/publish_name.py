@@ -1,47 +1,36 @@
-import paho.mqtt.client as mqtt
-import sys
-import time
+from pymongo import MongoClient
 
-def on_publish(cli, userdata, mid):
-  # Disconnect after our message has been sent.
-  print 'Message sent'
-  cli.disconnect()
+client = MongoClient('localhost', 27017)
+db = client.pollsapp
+#check if faceImage is a collection of pollsapp. if exists, then drop
 
-def main(arg1=0, arg2=0):
-# If a match is found, the name is sent to the robot
-			if arg1 != -1:
-				#Find name that matches the key predicted.
-				print 'Face found!' 
-				print "{} is Correctly Recognized with confidence {}".format(arg1, arg2)
-				
-				'''
-				while(os.path.isfile(path + '/subject' + str(arg1) + '.' + str(count) + '.jpg') == True):
-					count += 1
-		
-				cv2.imwrite(path + '/subject' + str(arg1) + '.' + str(count) + '.jpg',predict_image[y: y + h, x: x + w])
-				'''
-				
-				Subject = arg1
-				name  = ''
-				if(Subject == 16):
-					name = 'Lincoln'
-				elif(Subject == 18):
-					name = 'Yiran'
-				elif(Subject == 20):
-					name = 'Andrew'
-				else:
-					name = 'stranger'
-					
-				print ('Hello ' + name)
-				
-				cli = mqtt.Mosquitto("FaceResults")
-				cli.connect("54.173.42.47")
-				cli.on_publish = on_publish
-				time.sleep(3)
-				cli.publish('response',name,2)
-			else:
-				print 'No faces were found!' 
-				cli.publish('response','Null',2)
-if __name__ == '__main__':
-	main(sys.argv[1], sys.argv[2])	
-	
+print(db.collection_names())        #Return a list of collections in 'pollsapp'
+if ("faceImages" in db.collection_names()):     #Check if collection "faceImages" 
+	collection = db['faceImages']
+	print("Deleting: " + collection.name)
+	collection.drop()  	
+
+
+faceImage = [{"id":16,
+      	 	 "name":"Lincoln"},
+			 {"id":17,
+      	 	 "name":"Chris"},
+			 {"id":18,
+      	 	 "name":"Yiran"},
+			 {"id":19,
+      	 	 "name":"Ning"},
+			 {"id":20,
+      	 	 "name":"Andrew"},
+			 {"id":21,
+      	 	 "name":"Jeff"},
+			 {"id":22,
+      	 	 "name":"Doctor Bai"},
+			 {"id":23,
+      	 	 "name":"Jin"}
+			 ]
+posts = db.faceImages
+print("Inserting: "+posts.name)
+post_id = posts.insert_many(faceImage).inserted_ids
+print("Done Inserting. You have inserted:")
+for doc in posts.find():
+    print(doc)
